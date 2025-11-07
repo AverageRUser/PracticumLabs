@@ -274,22 +274,7 @@ namespace PracticumLab1
             Console.WriteLine($"ИМТ -  {bmiResults[measurementIndex]}, {BMIinfo(bmiResults[measurementIndex])}");
             Console.WriteLine($"Дата замера - {dates[measurementIndex]}");
         }
-        public static int IndexArrayExists(int index)
-        {
-            while (true)
-            {
-                try
-                {
-                    int num = FillInt("");
-
-                    return num;
-                }
-                catch (Exception ex)
-                {
-
-                }
-            }
-        }
+       
         public static void Main(string[] args)
         {
             double weight = 0,height =0, BrocWeight = 0,BMI = 0;
