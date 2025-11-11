@@ -89,6 +89,31 @@ namespace PracticumLab4
                 }
             }
         }
+        public static DateTime FillDateTime(string description)
+        {
+            Console.Write(description);
+            while (true)
+            {
+                try
+                {
+                    string input = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(input))
+                        throw new ArgumentException("Ввод не может быть пустым");
+
+                    if (!DateTime.TryParse(input, out DateTime datetime))
+                        throw new FormatException("Неверный формат даты");
+
+                    if (datetime.Day > DateTime.Now.Day && datetime.Month > DateTime.Now.Month)
+                        throw new ArgumentOutOfRangeException("Дата не может быть больше текущей");
+
+                    return datetime;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}. Введите данные ещё раз:");
+                }
+            }
+        }
         public static bool isWeightCorrect(double weight)
         {
             try

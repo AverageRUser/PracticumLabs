@@ -2,62 +2,19 @@
 {
     internal class Program
     {
-       
 
-        /*
-        public static void AnalyzeDynamicBMI(double[] bmiResults, DateTime[] dates)
-        {
 
-            double average = 0, maxElement = int.MinValue, minElement = int.MaxValue;
-            int count = 0, indexMax = 0, indexMin = 0;
 
-            for (int i = 0; i < bmiResults.Length; i++)
-            {
-                if (bmiResults[i] != 0)
-                    count++;
-
-            }
-            for (int i = 0; i < bmiResults.Length; i++)
-            {
-                average += bmiResults[i];
-            }
-
-            for (int j = 0; j < count; j++)
-            {
-                if (maxElement < bmiResults[j])
-                {
-                    maxElement = bmiResults[j];
-                    indexMax = j;
-                }
-            }
-            for (int k = 0; k < count; k++)
-            {
-                if (minElement > bmiResults[k])
-                {
-                    minElement = bmiResults[k];
-                    indexMin = k;
-                }
-            }
-            Console.WriteLine("Всего замеров: " + count);
-            Console.WriteLine($"Средний ИМТ: {average / count:N2}");
-            Console.WriteLine($"Максимальный ИМТ: {maxElement} ({dates[indexMin]})");
-            Console.WriteLine($"Минимальный ИМТ:  {minElement} ({dates[indexMax]})");
-            char sign = bmiResults[count - 1] > bmiResults[count - 2] ? '+' : '-';
-            double lastmount = Math.Abs(bmiResults[count - 1] - bmiResults[count - 2]);
-            Console.WriteLine($"Изменение за последний месяц: {sign} {lastmount:N2}");
-        }
-
-       */
         public static void Main(string[] args)
         {
-            double BrocWeight = 0, BMI = 0,weight,height;
-            BmiAnalyzer analyzer = new BmiAnalyzer(10);
-            int count = 0;
+            double weight, height;
+
+            StorageMeasurements storageMeasurements = new StorageMeasurements(10);
+            BmiAnalyzer analyzer = new BmiAnalyzer();
             int age = 0;
             string gender = "";
             int enter;
             bool exit = false;
-            bool calculation = false;
             while (!exit)
             {
                 Console.WriteLine("=== Анализатор ИМТ ===");
@@ -65,7 +22,9 @@
                 Console.WriteLine("2. История замеров");
                 Console.WriteLine("3. Анализ динамики");
                 Console.WriteLine("4. Сравнить замеры");
+                Console.WriteLine("5. Поиск замера по критерию");
                 Console.WriteLine("5. Выход");
+
                 Console.WriteLine("======================");
                 Console.Write("Выберите действие: ");
                 if (int.TryParse(Console.ReadLine(), out enter))
@@ -90,18 +49,20 @@
                                     //Автоматическое преобразование сантиметров в метры
                                     if (height > 100)
                                     {
-                                        height = height / 100;
+                                        height /= 100;
 
                                     }
                                 }
                                 while (!InputValidator.isHeightCorrect(height));
 
-                                Console.Write("Укажите пол (м/ж): ");
+                                Console.Write("Укажите пол (m/f): ");
                                 gender = InputValidator.FillGender();
 
 
                                 age = InputValidator.FillAge();
-                                analyzer.AddMeasurement(new BmiMeasurement(weight, height, gender, age));
+                                DateTime dateTime = InputValidator.FillDateTime("Введите дату:");
+                                storageMeasurements.AddMeasurement(new BmiMeasurement(weight, height, gender, age, dateTime));
+
                                 Console.WriteLine("Замер сохранен!");
                             }
                             catch (Exception ex)
@@ -109,45 +70,43 @@
                                 Console.WriteLine("Ошибка! - " + ex.Message);
                             }
 
-                                
-
-                            
                             break;
                         case 2:
-                            analyzer.ShowHistory();
-                            var measurements = analyzer.Measurements;
+                            ShowBmiData.ShowHistoryBmi(storageMeasurements);
+                            var measurements = storageMeasurements.Measurements;
 
                             if (measurements.Length > 0)
                             {
                                 while (true)
                                 {
                                     int mIndex = InputValidator.FillInt($"Укажите номер замера чтобы получить больше информации(от 1 до {measurements.Length}): ") - 1;
-                                    if (mIndex > measurements.Length )
+                                    if (mIndex > measurements.Length)
                                     {
                                         Console.WriteLine("Индекс вне диапазона массива. Введите другой индекс!");
                                     }
                                     else
                                     {
-                                        measurements[mIndex].PrintReport();
+                                        ShowBmiData.ShowMeasurement(measurements[mIndex]);
                                         break;
                                     }
                                 }
-                               
-                               
+
+
                             }
                             break;
                         case 3:
-                            analyzer.AnalyzeTrends();
+                            var trend = analyzer.AnalyzeTrends(storageMeasurements);
+                            ShowBmiData.ShowAnalyzeTrend(trend);
                             break;
                         case 4:
-                            var measurementCompare = analyzer.Measurements;
+                            var measurementCompare = storageMeasurements.Measurements;
                             if (measurementCompare.Length < 2)
                             {
                                 Console.WriteLine("Недостаточно замеров для сравнения (нужно минимум 2).");
                                 return;
                             }
 
-                            analyzer.ShowHistory();
+                            ShowBmiData.ShowHistoryBmi(storageMeasurements);
                             Console.WriteLine();
 
                             while (true)
@@ -160,11 +119,11 @@
                                 }
                                 else
                                 {
-                                    analyzer.CompareMeasurements(index1, index2);
+                                    var compare = MeasurementComparator.Compare(storageMeasurements.Measurements[index1], storageMeasurements.Measurements[index2]);
                                     break;
                                 }
                             }
-                        
+
                             break;
 
                         case 5:
