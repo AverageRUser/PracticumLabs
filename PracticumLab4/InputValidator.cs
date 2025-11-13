@@ -103,7 +103,7 @@ namespace PracticumLab4
                     if (!DateTime.TryParse(input, out DateTime datetime))
                         throw new FormatException("Неверный формат даты");
 
-                    if (datetime.Day > DateTime.Now.Day && datetime.Month > DateTime.Now.Month)
+                    if (datetime.Date > DateTime.Now.Date)
                         throw new ArgumentOutOfRangeException("Дата не может быть больше текущей");
 
                     return datetime;

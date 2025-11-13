@@ -13,7 +13,6 @@ namespace PracticumLab4
         public string Gender { get; private set; }
         public int Age { get; private set; }
         public double BmiValue { get; private set; }
-        public double BrocWeight { get; private set; }
         public string Category { get; private set; }
         public DateTime MeasurementDate { get; private set; }
 
@@ -25,14 +24,11 @@ namespace PracticumLab4
             Age = age;
             MeasurementDate = dateTime;
             BmiValue = BmiCalculator.CalculateBmi(this);
-            BrocWeight = BmiCalculator.CalculateBroc(this);
             Category = DetermineCategory();
         }
         public string GetRecommendation()
         {
-
-            double difference = Weight - BrocWeight;
-            double differencePercent = (difference / BrocWeight) * 100;
+            double differencePercent = BmiCalculator.GetDifferenceWeight(this);
 
             if (Math.Abs(differencePercent) < 5)
                 return $"Ваш вес близок к идеальному \nОтклонение от идеального веса - {differencePercent:N1}%";

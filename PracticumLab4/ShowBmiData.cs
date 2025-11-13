@@ -19,7 +19,7 @@ internal class ShowBmiData
         {
             if (bmi.Measurements[i] != null)
             {
-                Console.WriteLine($"{i + 1}. {bmi.Measurements[i].MeasurementDate:dd.MM.yyyy} - ИМТ: {bmi.Measurements[i].BmiValue:N2} ({bmi.Measurements[i].Category})");
+                Console.WriteLine($"{i + 1}. {bmi.Measurements[i].MeasurementDate.Date} - ИМТ: {bmi.Measurements[i].BmiValue:N2} ({bmi.Measurements[i].Category})");
             }
         }
         Console.ReadLine();
@@ -54,10 +54,32 @@ internal class ShowBmiData
             Console.WriteLine($"Вес: {bmiMeasurement.Weight} кг");
             Console.WriteLine($"Рост: {bmiMeasurement.Height} м");
             Console.WriteLine($"ИМТ: {bmiMeasurement.BmiValue:N2} - {bmiMeasurement.Category}");
-            Console.WriteLine($"Идеальный вес (по Броку): {bmiMeasurement.BrocWeight:N2} кг");
+            Console.WriteLine($"Идеальный вес (по Броку): {BmiCalculator.CalculateBroc(bmiMeasurement):N2} кг");
             Console.WriteLine($"Рекомендации: {bmiMeasurement.GetRecommendation()}");
             Console.WriteLine("=================================");
         Console.ReadLine();
+    }
+    public static void ShowFindMeasurements(BmiMeasurement[] measurements)
+    {
+        Console.Clear();
+        if (measurements.Length > 0)
+        {
+            Console.WriteLine($"=== Найдено замеров: {measurements.Length} ===");
+            for (int i = 0; i < measurements.Length; i++)
+            {
+                if (measurements[i] != null)
+                {
+                    Console.WriteLine($"{i + 1}. {measurements[i].MeasurementDate.Date} - ИМТ: {measurements[i].BmiValue:N2} ({measurements[i].Category})");
+                }
+            }
+            Console.WriteLine("=================================");
+
+            Console.ReadLine();
+        }
+        else
+        {
+            Console.WriteLine("Замер не найден");
+        }
     }
 
 }

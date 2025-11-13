@@ -23,7 +23,7 @@
                 Console.WriteLine("3. Анализ динамики");
                 Console.WriteLine("4. Сравнить замеры");
                 Console.WriteLine("5. Поиск замера по критерию");
-                Console.WriteLine("5. Выход");
+                Console.WriteLine("6. Выход");
 
                 Console.WriteLine("======================");
                 Console.Write("Выберите действие: ");
@@ -55,7 +55,7 @@
                                 }
                                 while (!InputValidator.isHeightCorrect(height));
 
-                                Console.Write("Укажите пол (m/f): ");
+                                Console.Write("Укажите пол (м/ж): ");
                                 gender = InputValidator.FillGender();
 
 
@@ -125,8 +125,54 @@
                             }
 
                             break;
+                        case 5: 
+                            Console.WriteLine("=== Поиск замеров ===");
+                            Console.WriteLine("1. По дате");
+                            Console.WriteLine("2. По весу");
+                            Console.WriteLine("3. По росту");
 
-                        case 5:
+                            int searchChoice = InputValidator.FillInt("Выберите критерий: ");
+                            var criteria = new SearchCriteria();
+                            switch (searchChoice)
+                            {
+
+                                case 1:
+                                    DateTime date = InputValidator.FillDateTime("Введите дату(в формате без времени): ");
+                                    criteria.Date = date.Date;
+                                    var byDate = storageMeasurements.Find(criteria);
+                                    ShowBmiData.ShowFindMeasurements(byDate);
+                       
+                                    break;
+                                case 2:
+                                    double weighter;
+                                    do
+                                    {
+                                        weighter = InputValidator.FillDouble("\nВведите вес(в кг): ");
+                                    }
+                                    while (!InputValidator.isWeightCorrect(weighter));
+                                    criteria.Weight= weighter;
+                                    var byWeight = storageMeasurements.Find(criteria);
+                                    ShowBmiData.ShowFindMeasurements(byWeight);
+                                    break;
+                                case 3:
+                                    double heighter;
+                                    do
+                                    {
+                                        heighter = InputValidator.FillDouble("Введите рост(в сантиметрах или в метрах): ");
+                                        if (heighter > 100)
+                                        {
+                                            heighter /= 100;
+
+                                        }
+                                    }
+                                    while (!InputValidator.isHeightCorrect(heighter));
+                                    criteria.Height = heighter;
+                                    var byHeight = storageMeasurements.Find(criteria);
+                                    ShowBmiData.ShowFindMeasurements(byHeight);
+                                    break;
+                            }
+                            break;
+                        case 6:
 
                             Console.WriteLine("Вы уверены? д/н");
 

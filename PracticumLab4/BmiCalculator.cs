@@ -19,7 +19,12 @@ namespace PracticumLab4
             else
                 return (baseWeight * 0.9) * ageCoefficient;
         }
-      
+        public static double GetDifferenceWeight(BmiMeasurement bmiMeasurement)
+        {
+            double BrocWeight = CalculateBroc(bmiMeasurement);
+            double difference = bmiMeasurement.Weight - BrocWeight;
+            return (difference / BrocWeight) * 100;
+        }
         private static double GetAgeCoefficient(double age)
         {
             if (age < 25)
